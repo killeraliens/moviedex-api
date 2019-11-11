@@ -9,18 +9,19 @@ const app = express()
 app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
-app.use(function validateAuthToken(req, res, next) {
-  const apiToken = process.env.API_TOKEN;
-  const authToken = req.get('Authorization');
-  const bearerToken = authToken ? authToken.split(' ')[1] : null;
-  if(!bearerToken || apiToken !== bearerToken) {
-    return res.status(401).json({error: 'Unauthorized Request'});
-  }
-  next()
-})
+app.use(validateAuthToken)
 app.get('/movies', handleGetMovies)
 app.get('/movie', handleGetMovie)
 
+function validateAuthToken(req, res, next) {
+  const apiToken = process.env.API_TOKEN;
+  const authToken = req.get('Authorization');
+  const bearerToken = authToken ? authToken.split(' ')[1] : null;
+  if (!bearerToken || apiToken !== bearerToken) {
+    return res.status(401).json({ error: 'Unauthorized Request' });
+  }
+  next()
+}
 
 function handleGetMovies(req, res) {
   res.json(movies)
