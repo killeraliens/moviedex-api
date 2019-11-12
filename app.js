@@ -10,8 +10,19 @@ app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
 app.use(validateAuthToken)
+app.use(errorHandler)
 app.get('/movies', handleGetMovies)
 app.get('/movie', handleGetMovie)
+
+function errorHandler(error, req, res, next) {
+  let response;
+  if ( process.env.NODE_ENV === 'production') {
+    response = {error: {message: 'Server Error'}}
+  } else {
+    response = {error}
+  }
+  res.status(500).json(response)
+}
 
 function validateAuthToken(req, res, next) {
   const apiToken = process.env.API_TOKEN;
