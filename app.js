@@ -6,7 +6,8 @@ const cors = require('cors')
 const movies = require('./movies')
 
 const app = express()
-app.use(morgan('dev'))
+const morganOption = process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'
+app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
 app.use(validateAuthToken)
